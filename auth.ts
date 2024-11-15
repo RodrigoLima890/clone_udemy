@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import authConfig from "./auth.config"
 import { db } from "./lib/db" 
 import { Role } from "@prisma/client"
+import Resend from "next-auth/providers/resend"
  
 export const { auth, handlers, signIn, signOut } = NextAuth({
     pages: {
@@ -42,8 +43,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
     },
     adapter: PrismaAdapter(db),
-  session: { strategy: "jwt" },
-  providers: [
-    ...authConfig.providers
-  ]
+    session: { strategy: "jwt" },
+    providers: [
+        Resend({
+            from: "onboarding@resend.dev",
+        }),
+        ...authConfig.providers
+    ]
 })
