@@ -5,6 +5,7 @@ export const publicRoutes = [
 
 export const authRoutes = [
     "/sign-in"
+    // "/auth/sign-in"
 ]
 
 export const apiAuthPrefix = "/api/auth"

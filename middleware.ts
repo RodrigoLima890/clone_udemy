@@ -11,7 +11,6 @@ export default auth(async function middleware(req) {
   const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
   const isApiAuth = nextUrl.pathname.startsWith(apiAuthPrefix);
 
-
   if(isApiAuth){
     return
   }
