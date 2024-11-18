@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import React from "react";
@@ -5,7 +6,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,6 +27,9 @@ import { Input } from "@/components/ui/input"
 import { LoginSchema } from "@/schema";
 import {FaGithub} from 'react-icons/fa';
 import {FcGoogle} from 'react-icons/fc';
+import { Loader2 } from "lucide-react";
+import { signIn } from "next-auth/react"; 
+import { DEFAULT_REDIRECT } from "@/routes";
 
 
 const page = () =>{
@@ -38,12 +40,26 @@ const page = () =>{
         }
     })
 
-    const onSubmit = (data: z.infer<typeof LoginSchema>) =>{
-        console.log(data);
+    const isPending = form.formState.isSubmitting
+
+    const [isGooglePending, setGooglePending] = React.useState(false);
+    const [isGitHubPending, setGitHubPending] = React.useState(false);
+
+    const onSubmit = async (data: z.infer<typeof LoginSchema>) =>{
+        try {
+            signIn('resend', {email: data.email, callbackUrl: DEFAULT_REDIRECT})
+        } catch (error) {
+            console.log(error)
+        }
     }
+
+    const onclick = async (provider: 'google' | 'github') => {
+        console.log(provider)
+    }
+    
     return (
-        <div className="w-full h-full flex-col justify-center items-center">
-            <Card className="max-w-sm w-full">
+        <div className="w-full h-full flex flex-col justify-center items-center">
+            <Card className="max-w-md">
                 <CardHeader>
                     <CardTitle className="text-2xl">Login</CardTitle>
                     <CardDescription>Faça login com sua conta</CardDescription>
@@ -58,7 +74,7 @@ const page = () =>{
                                     <FormItem>
                                         <FormLabel>Email</FormLabel>
                                         <FormControl>
-                                            <Input {...field} type="email" placeholder="Entre com seu email"></Input>
+                                            <Input {...field} disabled={isPending} type="email" placeholder="Entre com seu email"></Input>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
@@ -68,6 +84,7 @@ const page = () =>{
                             <Button
                              type="submit"
                              className="w-full"
+                             disabled={isPending}
                             >
                                Entrar</Button>
                         </form>
@@ -79,22 +96,36 @@ const page = () =>{
                     </div>
                     <Button
                         variant={"outline"}                            
-                        className="w-full flex- space-x-2"
-                    >
+                        className="w-full flex space-x-2"
+                        disabled={isPending}
+                        onClick={()=>{
+                            setGooglePending(true);
+                            onclick('google');
+                        }}>
+                        {
+                            isGooglePending ? <Loader2 className="w-6 h-6 animate-spin" />:
                         <>
                         <FcGoogle />
                         <span>Entrar Com Google</span>
                         </>
+                        }
                     </Button>
                    
                     <Button
                         variant={"outline"}                            
-                        className="w-full flex- space-x-2"
-                    >
+                        className="w-full flex space-x-2"
+                        disabled={isPending}
+                        onClick={()=>{
+                            setGitHubPending(true);
+                            onclick('github');
+                        }}>
+                        {
+                            isGitHubPending? <Loader2 className="w-6 h-6 animate-spin" />:
                         <>
                         <FaGithub className="w-6 h-6" />
                         <span>Entrar Com Github</span>
                         </>
+                        }
                     </Button>
                 </CardContent>
             </Card>
