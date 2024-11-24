@@ -30,9 +30,15 @@ import {FcGoogle} from 'react-icons/fc';
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react"; 
 import { DEFAULT_REDIRECT } from "@/routes";
-
+import { useSearchParams } from "next/navigation";
+import FormError from "@/components/global/form-error";
 
 const page = () =>{
+
+    const searchParams = useSearchParams()
+    const callbackUrl = searchParams.get('callbackUrl')
+    const urlError = searchParams.get('error') === "OAuthAccountNotLinked" ? "Conta não encontrada":null;
+
     const form = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
@@ -47,24 +53,25 @@ const page = () =>{
 
     const onSubmit = async (data: z.infer<typeof LoginSchema>) =>{
         try {
-            signIn('resend', {email: data.email, callbackUrl: DEFAULT_REDIRECT})
+            signIn('resend', {email: data.email, redirectTo: callbackUrl || DEFAULT_REDIRECT})
         } catch (error) {
             console.log(error)
         }
     }
 
     const onclick = async (provider: 'google' | 'github') => {
-        console.log(provider)
+        signIn(provider, { callbackUrl: callbackUrl || DEFAULT_REDIRECT })
     }
     
     return (
-        <div className="w-full h-full flex flex-col justify-center items-center">
+        <div className="w-full h-full flex justify-center items-center">
             <Card className="max-w-md">
                 <CardHeader>
                     <CardTitle className="text-2xl">Login</CardTitle>
                     <CardDescription>Faça login com sua conta</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                    <FormError message={urlError} />
                     <Form {...form}>
                         <form className="space-y-4"
                         onSubmit={form.handleSubmit(onSubmit)}>
