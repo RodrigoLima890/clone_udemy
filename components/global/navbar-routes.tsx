@@ -67,7 +67,7 @@ const NavBarRoutes = () =>{
                     authUser && isTeacherPage && !isPlayerPage && (
                         <Link 
                         href={"/teacher/analytics"}
-                        className="hidden md:block"
+                        className="hidden sm:block"
                         >
                             <Button
                                 size={"sm"}
@@ -80,7 +80,7 @@ const NavBarRoutes = () =>{
                     authUser && !isTeacherPage && !isPlayerPage && (
                         <Link 
                         href={"/analytics"}
-                        className="hidden md:block"
+                        className="hidden sm:block"
                         >
                             <Button
                                 size={"sm"}
