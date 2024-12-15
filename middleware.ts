@@ -3,10 +3,10 @@ import NextAuth from "next-auth"
 import {publicRoutes, authRoutes, apiAuthPrefix, DEFAULT_REDIRECT} from './routes'
 import { NextResponse } from "next/server"
 const { auth } = NextAuth(authConfig)
+
 export default auth(async function middleware(req) {
   const {nextUrl} = req
   const isLoggedIn = !!req.auth
-
   const isPublicRoutes = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
   const isApiAuth = nextUrl.pathname.startsWith(apiAuthPrefix);

@@ -18,8 +18,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { createCourseSchema } from "@/schema";
 import Link from "next/link";
+import { toast } from "sonner";
+import { createCourse } from "@/data";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const form = useForm<z.infer<typeof createCourseSchema>>({
     resolver: zodResolver(createCourseSchema),
     defaultValues: {
@@ -28,8 +32,18 @@ const page = () => {
   });
 
   const { isSubmitting, isValid } = form.formState;
-  function onSubmit(data: z.infer<typeof createCourseSchema>) {
-    console.log(data);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const router = useRouter()
+
+  async function onSubmit(data: z.infer<typeof createCourseSchema>) {
+    try{
+      const response = await createCourse(data)
+      toast.success("Course created")
+      router.push(`/teacher/courses/${response.id}`)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    }catch(error){
+      toast.error("Error creating course")
+    }
   }
   return (
     <div className="max-w-5xl mx-auto h-full w-full flex md:items-center md:justify-center p-6">
