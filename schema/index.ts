@@ -11,3 +11,7 @@ export const createCourseSchema = z.object({
 export const titleSchema = z.object({
     title: z.string().min(1, {message:"Title is required"})
 })
+
+export const descriptionSchema = z.object({
+    description: z.string().min(1, {message:"description is required"})
+})

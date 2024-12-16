@@ -5,6 +5,7 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TitleForm from "./_components/title-form";
+import DescriptionForm from "./_components/description-form";
 
 type Props = {
   params: {
@@ -63,6 +64,12 @@ const page = async ({ params }: Props) => {
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
                         <TitleForm 
+                            initialData={course}
+                            courseId={course.id}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <DescriptionForm 
                             initialData={course}
                             courseId={course.id}
                         />

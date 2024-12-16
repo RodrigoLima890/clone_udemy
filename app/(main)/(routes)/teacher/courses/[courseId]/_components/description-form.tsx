@@ -3,7 +3,7 @@ import React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { titleSchema } from "@/schema";
+import { descriptionSchema } from "@/schema";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Loader2, Pencil } from "lucide-react";
@@ -12,46 +12,46 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { updateCourseTitle } from "@/data";
-
+import { updateCourseDescription } from "@/data";
+import { Course } from "@prisma/client";
+import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea"
 type Props = {
-  initialData: {
-    title: string;
-  };
+  initialData: Course;
   courseId: string;
 };
 
-const TitleForm = ({ initialData, courseId }: Props) => {
+const DescriptionForm = ({ initialData, courseId }: Props) => {
   const route = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
 
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
-  const form = useForm<z.infer<typeof titleSchema>>({
-    resolver: zodResolver(titleSchema),
-    defaultValues: initialData,
+  const form = useForm<z.infer<typeof descriptionSchema>>({
+    resolver: zodResolver(descriptionSchema),
+    defaultValues: {
+      description: initialData.description || "",
+    },
   });
   const { isSubmitting, isValid } = form.formState;
 
-   const onSubmit = async (values: z.infer<typeof titleSchema>) => {
+  const onSubmit = async (values: z.infer<typeof descriptionSchema>) => {
     try {
-        await updateCourseTitle(courseId, values)
-        toggleEditing()
-        route.refresh()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      await updateCourseDescription(courseId, values);
+      toggleEditing();
+      route.refresh();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-        toast.error("Error updating title")
+      toast.error("Error updating title");
     }
-  }
+  };
   return (
     <div className="mt-6 border bg-meted text-muted-foreground p-4">
       <div className="font-medium flex items-center justify-between">
-        Course title
+        Course description
         <Button variant={"ghost"} onClick={toggleEditing}>
           {isEditing && "Cancel"}
           {!isEditing && (
@@ -62,7 +62,16 @@ const TitleForm = ({ initialData, courseId }: Props) => {
           )}
         </Button>
       </div>
-      {!isEditing && <p className="mt-2 text-sm">{initialData.title}</p>}
+      {!isEditing && (
+        <p
+          className={cn(
+            "mt-2 text-sm",
+            !initialData.description && "text-muted-foreground/50 italic"
+          )}
+        >
+          {initialData.description || "Add a description"}
+        </p>
+      )}
       {isEditing && (
         <Form {...form}>
           <form
@@ -71,13 +80,12 @@ const TitleForm = ({ initialData, courseId }: Props) => {
           >
             <FormField
               control={form.control}
-              name="title"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Edit title"
+                    <Textarea
+                      placeholder="Edit description"
                       {...field}
                       disabled={isSubmitting}
                     />
@@ -98,4 +106,4 @@ const TitleForm = ({ initialData, courseId }: Props) => {
   );
 };
 
-export default TitleForm;
+export default DescriptionForm;
