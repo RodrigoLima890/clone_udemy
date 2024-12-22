@@ -108,3 +108,59 @@ export const updateCourseDescription = async (courseId: string, data: { descript
         throw error
     }
 }
+
+export const updateCoursePrice = async (courseId: string, data: { price: number }) => {
+    try {
+        const user = await _isAuthUser()
+        if (!user) throw Error("User not found");
+
+        const course = db.course.update({
+            where: {
+                id: courseId,
+                teacherId: user.id
+            },
+            data: {
+                price: data.price
+            }
+        })
+        return course
+    } catch (error) {
+        console.log("Error in updateCoursePrice: ", error)
+        throw error
+    }
+}
+export const updateCourseCategory = async (courseId: string, data: { categoryId: string }) => {
+    try {
+        const user = await _isAuthUser()
+        if (!user) throw Error("User not found");
+
+        const course = db.course.update({
+            where: {
+                id: courseId,
+                teacherId: user.id
+            },
+            data: {
+                categoryId: data.categoryId
+            }
+        })
+        return course
+    } catch (error) {
+        console.log("Error in updateCourseCategory: ", error)
+        throw error
+    }
+}
+
+export const getCategories = async() => {
+    try {
+    
+        const categories = db.category.findMany({
+            orderBy: {
+                name: "asc"
+            }
+        })
+        return categories
+    } catch (error) {
+        console.log("Error in getCategories: ", error)
+        throw error
+    }
+}

@@ -15,3 +15,11 @@ export const titleSchema = z.object({
 export const descriptionSchema = z.object({
     description: z.string().min(1, {message:"description is required"})
 })
+
+export const priceSchema = z.object({
+    price: z.coerce.number()
+})
+
+export const categorySchema = z.object({
+    categoryId: z.string().min(1, {message:"category is required"})
+})

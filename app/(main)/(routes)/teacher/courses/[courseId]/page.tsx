@@ -1,4 +1,4 @@
-import { getCourse } from "@/data";
+import { getCategories, getCourse } from "@/data";
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TitleForm from "./_components/title-form";
 import DescriptionForm from "./_components/description-form";
+import PriceForm from "./_components/price-form";
+import CategoryForm from "./_components/category-form";
 
 type Props = {
   params: {
@@ -28,6 +30,7 @@ const page = async ({ params }: Props) => {
     course.chapter.some((chapter) => chapter.isPublisched),
   ];
 
+  const categories = await getCategories()
   const totalFields = requiredField.length;
   const completedFields = requiredField.filter(Boolean).length;
   const completionText = `${completedFields}/${totalFields}`;
@@ -72,6 +75,22 @@ const page = async ({ params }: Props) => {
                         <DescriptionForm 
                             initialData={course}
                             courseId={course.id}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <PriceForm 
+                            initialData={course}
+                            courseId={course.id}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <CategoryForm 
+                            initialData={course}
+                            courseId={course.id}
+                            options={categories.map((category) => ({
+                              label: category.name,
+                              value: category.id
+                            }))}
                         />
                     </div>
                 </CardContent>
