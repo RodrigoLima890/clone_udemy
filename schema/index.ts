@@ -23,3 +23,7 @@ export const priceSchema = z.object({
 export const categorySchema = z.object({
     categoryId: z.string().min(1, {message:"category is required"})
 })
+
+export const imageSchema = z.object({
+    imageUrl: z.string().min(1, {message:"category is required"})
+})

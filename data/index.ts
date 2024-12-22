@@ -150,6 +150,27 @@ export const updateCourseCategory = async (courseId: string, data: { categoryId:
     }
 }
 
+export const updateCourseImage = async (courseId: string, data: { imageUrl: string }) => {
+    try {
+        const user = await _isAuthUser()
+        if (!user) throw Error("User not found");
+
+        const course = db.course.update({
+            where: {
+                id: courseId,
+                teacherId: user.id
+            },
+            data: {
+                imageUrl: data.imageUrl
+            }
+        })
+        return course
+    } catch (error) {
+        console.log("Error in updateCourseImage: ", error)
+        throw error
+    }
+}
+
 export const getCategories = async() => {
     try {
     

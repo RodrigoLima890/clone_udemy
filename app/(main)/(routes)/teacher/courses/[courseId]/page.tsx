@@ -8,6 +8,7 @@ import TitleForm from "./_components/title-form";
 import DescriptionForm from "./_components/description-form";
 import PriceForm from "./_components/price-form";
 import CategoryForm from "./_components/category-form";
+import ImageForm from "./_components/image-form";
 
 type Props = {
   params: {
@@ -91,6 +92,12 @@ const page = async ({ params }: Props) => {
                               label: category.name,
                               value: category.id
                             }))}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <ImageForm 
+                            initialData={course}
+                            courseId={course.id}
                         />
                     </div>
                 </CardContent>

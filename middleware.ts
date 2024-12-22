@@ -10,8 +10,9 @@ export default auth(async function middleware(req) {
   const isPublicRoutes = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
   const isApiAuth = nextUrl.pathname.startsWith(apiAuthPrefix);
+  const isWebHookRoutes = nextUrl.pathname.includes(nextUrl.pathname);
 
-  if(isApiAuth){
+  if(isApiAuth || isWebHookRoutes){
     return
   }
 
