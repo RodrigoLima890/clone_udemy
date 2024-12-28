@@ -171,9 +171,97 @@ export const updateCourseImage = async (courseId: string, data: { imageUrl: stri
     }
 }
 
-export const getCategories = async() => {
+export const updateCourseAttachment = async (courseId: string, data: { url: string }) => {
     try {
-    
+        const user = await _isAuthUser()
+        if (!user) throw Error("User not found");
+
+        const attachment = db.attachment.create({
+            data: {
+                url: data.url,
+                courseId: courseId,
+                name: data.url.split('/').pop()
+            }
+        })
+        return attachment
+    } catch (error) {
+        console.log("Error in updateCourseAttachment: ", error)
+        throw error
+    }
+}
+export const deleteAttachmentCourse = async (courseId: string, id: string) => {
+    try {
+        const user = await _isAuthUser()
+        if (!user) throw Error("User not found");
+
+        const attachment = db.attachment.delete({
+            where: {
+                id: id,
+                courseId: courseId
+            }
+        })
+        return attachment
+    } catch (error) {
+        console.log("Error in deleteAttachment: ", error)
+        throw error
+    }
+}
+
+export const updateCourseChapter = async (courseId: string, data: { title: string }) => {
+    try {
+        const user = await _isAuthUser()
+
+        if (!user) throw Error("User not found");
+
+        const lastChapter = await db.chapter.findFirst({
+            where: {
+                courseId: courseId
+            },
+            orderBy: {
+                position: 'desc'
+            }
+        })
+
+        const position = lastChapter ? lastChapter.position + 1 : 1
+
+        const chapter = db.chapter.create({
+            data: {
+                title: data.title,
+                courseId: courseId,
+                position: position
+            }
+        })
+        return chapter
+    } catch (error) {
+        console.log("Error in updateCourseChapter: ", error)
+        throw error
+    }
+}
+
+export const updateChapterOrder = async (
+    courseId: string,
+    data: { id: string, position: number } []
+) => {
+    const user = await _isAuthUser()
+
+    if (!user) throw Error("User not found");
+
+    for (const item of data) {
+        await db.chapter.update({
+            where: {
+                id: item.id,
+                courseId: courseId
+            },
+            data: {
+                position: item.position
+            }
+        })
+    }
+}
+
+export const getCategories = async () => {
+    try {
+
         const categories = db.category.findMany({
             orderBy: {
                 name: "asc"

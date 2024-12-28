@@ -60,12 +60,12 @@ const ImageForm = ({ initialData, courseId }: Props) => {
             <ImageIcon className="h-12 w-12 text-muted-foreground" />
           </div>
         ) : (
-          <div className="relative aspect-video mt-2 h-48">
+          <div className="relative aspect-video mt-4 h-48">
             <Image
               src={initialData.imageUrl}
               alt="course image"
               fill
-              className="rounded-md object-cover"
+              className="rounded-md object-cover ml-0"
             />
           </div>
         ))}

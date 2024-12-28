@@ -25,5 +25,13 @@ export const categorySchema = z.object({
 })
 
 export const imageSchema = z.object({
-    imageUrl: z.string().min(1, {message:"category is required"})
+    imageUrl: z.string().min(1, {message:"image is required"})
+})
+
+export const attachmentSchema = z.object({
+    url: z.string().min(1, {message:"attachment is required"})
+})
+
+export const chapterSchema = z.object({
+    title: z.string().min(1, {message:"title is required"})
 })

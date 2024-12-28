@@ -9,6 +9,8 @@ import DescriptionForm from "./_components/description-form";
 import PriceForm from "./_components/price-form";
 import CategoryForm from "./_components/category-form";
 import ImageForm from "./_components/image-form";
+import AttachmentForm from "./_components/attachment-form";
+import ChaptersForm from "./_components/chapters-form";
 
 type Props = {
   params: {
@@ -31,7 +33,7 @@ const page = async ({ params }: Props) => {
     course.chapter.some((chapter) => chapter.isPublisched),
   ];
 
-  const categories = await getCategories()
+  const categories = await getCategories();
   const totalFields = requiredField.length;
   const completedFields = requiredField.filter(Boolean).length;
   const completionText = `${completedFields}/${totalFields}`;
@@ -61,57 +63,62 @@ const page = async ({ params }: Props) => {
             <TabsContent value="details">
               <Card>
                 <CardHeader>
-                    <CardTitle>
-                        Course Details
-                    </CardTitle>
+                  <CardTitle>Course Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                        <TitleForm 
-                            initialData={course}
-                            courseId={course.id}
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <DescriptionForm 
-                            initialData={course}
-                            courseId={course.id}
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <PriceForm 
-                            initialData={course}
-                            courseId={course.id}
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <CategoryForm 
-                            initialData={course}
-                            courseId={course.id}
-                            options={categories.map((category) => ({
-                              label: category.name,
-                              value: category.id
-                            }))}
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <ImageForm 
-                            initialData={course}
-                            courseId={course.id}
-                        />
-                    </div>
+                  <div className="space-y-2">
+                    <TitleForm initialData={course} courseId={course.id} />
+                  </div>
+                  <div className="space-y-2">
+                    <DescriptionForm
+                      initialData={course}
+                      courseId={course.id}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <PriceForm initialData={course} courseId={course.id} />
+                  </div>
+                  <div className="space-y-2">
+                    <CategoryForm
+                      initialData={course}
+                      courseId={course.id}
+                      options={categories.map((category) => ({
+                        label: category.name,
+                        value: category.id,
+                      }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <ImageForm initialData={course} courseId={course.id} />
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
             <TabsContent value="content">
-              Make changes to your account here.
+              <Card>
+                <CardHeader>
+                  <CardTitle>Course Chapters</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <ChaptersForm initialData={course} courseId={course.id} />
+                  </div>
+                </CardContent>
+              </Card>{" "}
             </TabsContent>
-
             <TabsContent value="resources">
-              Make changes to your account here.
+              <Card>
+                <CardHeader>
+                  <CardTitle>Course Resources</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <AttachmentForm initialData={course} courseId={course.id} />
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
-        
           </Tabs>
         </div>
       </div>
