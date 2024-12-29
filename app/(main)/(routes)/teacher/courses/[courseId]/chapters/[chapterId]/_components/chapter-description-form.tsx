@@ -15,16 +15,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { updateCourseDescription } from "@/data";
-import { Course } from "@prisma/client";
+import { updateChapterDescription } from "@/data";
+import { Chapter } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea"
+import Tiptap from "@/components/global/tiptap";
 type Props = {
-  initialData: Course;
+  initialData: Chapter;
   courseId: string;
 };
 
-const DescriptionForm = ({ initialData, courseId }: Props) => {
+const ChapterDescriptionForm = ({ initialData, courseId }: Props) => {
   const route = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -40,18 +41,19 @@ const DescriptionForm = ({ initialData, courseId }: Props) => {
 
   const onSubmit = async (values: z.infer<typeof descriptionSchema>) => {
     try {
-      await updateCourseDescription(courseId, values);
+      await updateChapterDescription(courseId, values, initialData.id);
       toggleEditing();
       route.refresh();
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error("Error updating title");
+      toast.error("Error updating description");
+      console.log(error)
     }
   };
   return (
     <div className="mt-6 border bg-meted text-muted-foreground p-4">
       <div className="font-medium flex items-center justify-between">
-        Course description
+        Chapter description
         <Button variant={"ghost"} onClick={toggleEditing}>
           {isEditing && "Cancel"}
           {!isEditing && (
@@ -84,11 +86,7 @@ const DescriptionForm = ({ initialData, courseId }: Props) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
-                      placeholder="Edit description"
-                      {...field}
-                      disabled={isSubmitting}
-                    />
+                    <Tiptap val={field.value}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -106,4 +104,4 @@ const DescriptionForm = ({ initialData, courseId }: Props) => {
   );
 };
 
-export default DescriptionForm;
+export default ChapterDescriptionForm;

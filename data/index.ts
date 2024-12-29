@@ -212,6 +212,28 @@ export const updateChapterTitle = async (
     }
 }
 
+export const updateChapterDescription = async (
+    courseId: string, data: { description: string }, chapterId: string) => {
+    try {
+        const user = await _isAuthUser()
+        if (!user) throw Error("User not found");
+
+        const chapter = db.chapter.update({
+            where: {
+                id: chapterId,
+                courseId: courseId
+            },
+            data: {
+                description: data.description
+            }
+        })
+        return chapter
+    } catch (error) {
+        console.log("Error in updateChapterDescription: ", error)
+        throw error
+    }
+}
+
 export const deleteAttachmentCourse = async (courseId: string, id: string) => {
     try {
         const user = await _isAuthUser()

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ChapterTitleForm from "./_components/chapter-title-form";
+import ChapterDescriptionForm from "./_components/chapter-description-form";
 
 type Props = {
   params: {
@@ -62,6 +63,14 @@ const Page = async ({ params }: Props) => {
                     initialData={chapter}
                     courseId={params.courseId}
                     chapterId={params.chapterId}
+                    />
+                </div>
+            </CardContent>
+            <CardContent className="space-y-4">
+                <div className="space-y-4">
+                    <ChapterDescriptionForm 
+                    initialData={chapter}
+                    courseId={params.courseId}
                     />
                 </div>
             </CardContent>
