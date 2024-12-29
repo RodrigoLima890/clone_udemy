@@ -57,7 +57,7 @@ const ChaptersForm = ({ initialData, courseId }: Props) => {
   const onReorder = async(updateData: { id: string; position: number }[]) => {
     try {
         setIsUpdating(true)
-        await updateChapterOrder()
+        await updateChapterOrder(courseId,updateData)
         route.refresh()
         toast.success("Chaptets reordered")
     } catch (error) {
@@ -71,7 +71,7 @@ const ChaptersForm = ({ initialData, courseId }: Props) => {
     route.push(`/teacher/courses/${courseId}/chapters/${id}`)
   }
   return (
-    <div className="mt-6 border bg-muted text-muted-foreground p-4">
+    <div className="mt-6 border bg-muted text-muted-foreground p-4 relative">
         {
           isUpdating && (
         <div className="absolute h-full w-full bg-muted-foreground top-0 ring-0 rounded-md fex items-center justify-center">
@@ -130,13 +130,11 @@ const ChaptersForm = ({ initialData, courseId }: Props) => {
                 !initialData.chapter.length && "text-muted-foreground/50 italic"
             )}>
                 {!initialData.chapter.length && "No chapters added"}
-                <div>
                 <ChapterList 
-                  onEdit{onEdit}
-                  onReorder{onReorder}
+                  onEdit={onEdit}
+                  onReorder={onReorder}
                   items={initialData.chapter || []}
                   />
-                  </div>
             </div>
         )
       }

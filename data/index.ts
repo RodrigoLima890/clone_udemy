@@ -189,6 +189,29 @@ export const updateCourseAttachment = async (courseId: string, data: { url: stri
         throw error
     }
 }
+
+export const updateChapterTitle = async (
+    courseId: string, data: { title: string }, chapterId: string) => {
+    try {
+        const user = await _isAuthUser()
+        if (!user) throw Error("User not found");
+
+        const chapter = db.chapter.update({
+            where: {
+                id: chapterId,
+                courseId: courseId
+            },
+            data: {
+                title: data.title
+            }
+        })
+        return chapter
+    } catch (error) {
+        console.log("Error in updateChapterTitle: ", error)
+        throw error
+    }
+}
+
 export const deleteAttachmentCourse = async (courseId: string, id: string) => {
     try {
         const user = await _isAuthUser()
@@ -270,6 +293,31 @@ export const getCategories = async () => {
         return categories
     } catch (error) {
         console.log("Error in getCategories: ", error)
+        throw error
+    }
+}
+
+export const getChapter = async (
+    chapterId: string,
+    courseId: string
+) => {
+    try {
+        const user = await _isAuthUser()
+
+        if (!user) throw Error("User not found");
+    
+        const chapter = db.chapter.findUnique({
+            where: {
+                id: chapterId,
+                courseId: courseId
+            },
+            include: {
+                muxData: true
+            }
+        })
+        return chapter
+    } catch (error) {
+        console.log("Error in getChapter: ", error)
         throw error
     }
 }

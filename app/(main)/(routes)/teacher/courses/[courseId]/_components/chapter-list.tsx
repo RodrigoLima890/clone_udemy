@@ -107,7 +107,9 @@ const ChapterList = ({ onEdit, onReorder, items }: Props) => {
                   </div>
                 )}
               </Draggable>
-            ))}
+            ))
+          }
+          {provided.placeholder}  
           </div>
         )}
       </Droppable>
