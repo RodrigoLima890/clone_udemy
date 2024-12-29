@@ -50,7 +50,7 @@ const ChapterTitleForm = ({ initialData, courseId, chapterId }: Props) => {
     }
   }
   return (
-    <div className="mt-6 border bg-meted text-muted-foreground p-4">
+    <div className="mt-6 border bg-muted text-muted-foreground p-4">
       <div className="font-medium flex items-center justify-between">
         Chapter title
         <Button variant={"ghost"} onClick={toggleEditing}>

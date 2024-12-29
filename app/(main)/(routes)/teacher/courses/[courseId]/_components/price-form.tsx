@@ -49,7 +49,7 @@ const PriceForm = ({ initialData, courseId }: Props) => {
     }
   };
   return (
-    <div className="mt-6 border bg-meted text-muted-foreground p-4">
+    <div className="mt-6 border bg-muted text-muted-foreground p-4">
       <div className="font-medium flex items-center justify-between">
         Course price
         <Button variant={"ghost"} onClick={toggleEditing}>

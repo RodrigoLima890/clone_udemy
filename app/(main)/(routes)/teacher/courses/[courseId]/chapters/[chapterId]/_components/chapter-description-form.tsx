@@ -18,7 +18,6 @@ import { toast } from "sonner";
 import { updateChapterDescription } from "@/data";
 import { Chapter } from "@prisma/client";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea"
 import Tiptap from "@/components/global/tiptap";
 type Props = {
   initialData: Chapter;
@@ -51,7 +50,7 @@ const ChapterDescriptionForm = ({ initialData, courseId }: Props) => {
     }
   };
   return (
-    <div className="mt-6 border bg-meted text-muted-foreground p-4">
+    <div className="mt-6 border bg-muted text-muted-foreground p-4">
       <div className="font-medium flex items-center justify-between">
         Chapter description
         <Button variant={"ghost"} onClick={toggleEditing}>
@@ -65,14 +64,21 @@ const ChapterDescriptionForm = ({ initialData, courseId }: Props) => {
         </Button>
       </div>
       {!isEditing && (
-        <p
+        <div
           className={cn(
             "mt-2 text-sm",
             !initialData.description && "text-muted-foreground/50 italic"
           )}
         >
-          {initialData.description || "Add a description"}
-        </p>
+          {!initialData.description && "Add a description"}
+          {
+            initialData.description && (
+              <div
+                dangerouslySetInnerHTML={{__html: initialData.description}}
+              />
+            )
+          }
+        </div>
       )}
       {isEditing && (
         <Form {...form}>
