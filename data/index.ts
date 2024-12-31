@@ -2,7 +2,7 @@
 
 import { currentUser } from "@/lib/auth"
 import { db } from "@/lib/db";
-
+import Mux from "@mux/mux-node"
 
 const _isAuthUser = async () => {
     try {
@@ -328,6 +328,69 @@ export const updateChapterOrder = async (
                 position: item.position
             }
         })
+    }
+}
+
+const { video } = new Mux({
+    tokenId: process.env.MUX_TOKEN_ID,
+    tokenSecret: process.env.MUX_TOKEN_SECRET
+})
+
+export const updateChapterVideo = async (
+    courseId: string,
+    data: { videoUrl: string},
+    chapterId: string
+) => {
+    try {
+        const user = await _isAuthUser()
+    
+        if (!user) throw Error("User not found");
+    
+        const chapter = db.chapter.update({
+            where: {
+                id: chapterId,
+                courseId: courseId
+            },
+            data: {
+                videoUrl: data.videoUrl
+            }
+        })
+
+        if(data.videoUrl){
+            const existsMuxData = await db.muxData.findFirst({
+                where: {
+                    chapterId:chapterId
+                }
+            })
+
+            if(existsMuxData){
+                await video.assets.delete(existsMuxData.assetId)
+                await db.muxData.delete({
+                    where: {
+                        id: existsMuxData.id
+                    }
+                })
+            }
+            const asset = await video.assets.create({
+                input: [{
+                    url: data.videoUrl
+                }],
+                playback_policy: ['public'],
+                test: false
+            })
+
+            await db.muxData.create({
+                data: {
+                    playbackId: asset.playback_ids?.[0]?.id,
+                    assetId: asset.id,
+                    chapterId: chapterId
+                }
+            })
+        }
+        return chapter;
+    }catch (error) {
+        console.log("Error in updateChapterVideo: ", error)
+        throw error
     }
 }
 

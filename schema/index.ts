@@ -5,15 +5,15 @@ export const LoginSchema = z.object({
 })
 
 export const createCourseSchema = z.object({
-    title: z.string().min(1, {message:"Title is required"})
+    title: z.string().min(1, { message: "Title is required" })
 })
 
 export const titleSchema = z.object({
-    title: z.string().min(1, {message:"Title is required"})
+    title: z.string().min(1, { message: "Title is required" })
 })
 
 export const descriptionSchema = z.object({
-    description: z.string().min(1, {message:"description is required"})
+    description: z.string().min(1, { message: "description is required" })
 })
 
 export const priceSchema = z.object({
@@ -21,21 +21,27 @@ export const priceSchema = z.object({
 })
 
 export const categorySchema = z.object({
-    categoryId: z.string().min(1, {message:"category is required"})
+    categoryId: z.string().min(1, { message: "category is required" })
 })
 
 export const imageSchema = z.object({
-    imageUrl: z.string().min(1, {message:"image is required"})
+    imageUrl: z.string().min(1, { message: "image is required" })
 })
 
 export const attachmentSchema = z.object({
-    url: z.string().min(1, {message:"attachment is required"})
+    url: z.string().min(1, { message: "attachment is required" })
 })
 
 export const chapterSchema = z.object({
-    title: z.string().min(1, {message:"title is required"})
+    title: z.string().min(1, { message: "title is required" })
 })
 
 export const isFreeSchema = z.object({
     isFree: z.boolean()
+})
+
+export const videoSchema = z.object({
+    videoUrl: z.string().min(1, {
+        message: "Video is required"
+    })
 })
