@@ -17,7 +17,7 @@ type Props = {
   courseId: string;
 };
 
-const ImageForm = ({ initialData, courseId }: Props) => {
+const ChapterVideoForm = ({ initialData, courseId }: Props) => {
   const route = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -85,4 +85,4 @@ const ImageForm = ({ initialData, courseId }: Props) => {
   );
 };
 
-export default ImageForm;
+export default ChapterVideoForm;

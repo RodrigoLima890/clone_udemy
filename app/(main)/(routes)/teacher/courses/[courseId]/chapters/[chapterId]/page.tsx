@@ -1,11 +1,13 @@
 import { getChapter } from "@/data";
-import { ArrowLeft, PenSquare } from "lucide-react";
+import { ArrowLeft, PenSquare, Video } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ChapterTitleForm from "./_components/chapter-title-form";
 import ChapterDescriptionForm from "./_components/chapter-description-form";
+import ChapterAccessForm from "./_components/chapter-access-form";
+import ChapterVideoForm from "./_components/chapter-video-form";
 
 type Props = {
   params: {
@@ -29,15 +31,15 @@ const Page = async ({ params }: Props) => {
     <>
       {/* Add banner */}
       <div className="p-6">
+        <Link
+          href={`/teacher/courses/${params.courseId}`}
+          className="flex items-center text-sm hover:opacity-75 mb-6 transition max-w-fit"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Course
+        </Link>
         <div className="flex items-center justify-between">
           <div className="w-full">
-            <Link
-              href={`/teacher/courses/${params.chapterId}`}
-              className="flex items-center text-sm hover:opacity-75 mb-6 transition"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Course
-            </Link>
             <div className="flex items-center justify-between w-full">
               <div className="flex flex-col gap-y-2">
                 <h1 className="text-3x1 font-bold">Chapter setup</h1>
@@ -58,21 +60,42 @@ const Page = async ({ params }: Props) => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                <div className="space-y-4">
-                    <ChapterTitleForm 
-                    initialData={chapter}
-                    courseId={params.courseId}
-                    chapterId={params.chapterId}
-                    />
-                </div>
+              <div className="space-y-2">
+                <ChapterTitleForm
+                  initialData={chapter}
+                  courseId={params.courseId}
+                  chapterId={params.chapterId}
+                />
+              </div>
+              <div className="space-y-2">
+                <ChapterDescriptionForm
+                  initialData={chapter}
+                  courseId={params.courseId}
+                />
+              </div>
+              <div className="space-y-2">
+                <ChapterAccessForm
+                  initialData={chapter}
+                  courseId={params.courseId}
+                />
+              </div>
             </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Video className="mr-2" />
+                Video content
+              </CardTitle>
+            </CardHeader>
             <CardContent className="space-y-4">
-                <div className="space-y-4">
-                    <ChapterDescriptionForm 
-                    initialData={chapter}
-                    courseId={params.courseId}
-                    />
-                </div>
+              <div className="space-y-2">
+                <ChapterVideoForm
+                  initialData={chapter}
+                  courseId={params.courseId}
+                  chapterId={params.chapterId}
+                />
+              </div>
             </CardContent>
           </Card>
         </div>

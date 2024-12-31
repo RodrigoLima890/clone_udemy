@@ -283,9 +283,36 @@ export const updateCourseChapter = async (courseId: string, data: { title: strin
     }
 }
 
+export const updateChapterAccess = async (
+    courseId: string,
+    data: { isFree: boolean },
+    chapterId: string
+) => {
+    try {
+        const user = await _isAuthUser()
+
+        if (!user) throw Error("User not found");
+
+        const chapter = await db.chapter.update({
+            where: {
+                id: chapterId,
+                courseId: courseId
+            },
+            data: {
+                isFree: data.isFree
+            }
+        })
+
+        return chapter
+    } catch (error) {
+        console.log("Error in updateChapterAccess: ", error)
+        throw error
+    }
+}
+
 export const updateChapterOrder = async (
     courseId: string,
-    data: { id: string, position: number } []
+    data: { id: string, position: number }[]
 ) => {
     const user = await _isAuthUser()
 
@@ -327,7 +354,7 @@ export const getChapter = async (
         const user = await _isAuthUser()
 
         if (!user) throw Error("User not found");
-    
+
         const chapter = db.chapter.findUnique({
             where: {
                 id: chapterId,

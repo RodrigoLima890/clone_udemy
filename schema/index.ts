@@ -35,3 +35,7 @@ export const attachmentSchema = z.object({
 export const chapterSchema = z.object({
     title: z.string().min(1, {message:"title is required"})
 })
+
+export const isFreeSchema = z.object({
+    isFree: z.boolean()
+})

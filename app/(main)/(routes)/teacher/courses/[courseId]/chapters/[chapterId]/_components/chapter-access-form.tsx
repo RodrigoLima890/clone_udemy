@@ -3,7 +3,7 @@ import React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { categorySchema } from "@/schema";
+import { isFreeSchema } from "@/schema";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Loader2, Pencil } from "lucide-react";
@@ -15,45 +15,43 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { updateCourseCategory } from "@/data";
-import { Course } from "@prisma/client";
+import { updateChapterAccess } from "@/data";
+import { Switch } from "@/components/ui/switch"
+import { Chapter } from "@prisma/client";
 import { cn } from "@/lib/utils";
-import { Combobox } from "@/components/ui/combobox"
 type Props = {
-  initialData: Course
-  courseId: string
-  options: {label: string, value: string}[]
+  initialData: Chapter;
+  courseId: string;
 };
 
-const CategoryForm = ({ initialData, courseId, options }: Props) => {
+const ChapterAccessForm = ({ initialData, courseId }: Props) => {
   const route = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
 
   const toggleEditing = () => setIsEditing((prev) => !prev);
 
-  const form = useForm<z.infer<typeof categorySchema>>({
-    resolver: zodResolver(categorySchema),
+  const form = useForm<z.infer<typeof isFreeSchema>>({
+    resolver: zodResolver(isFreeSchema),
     defaultValues: {
-      categoryId: initialData.description || undefined,
+      isFree: initialData.isFree || false,
     },
   });
-  const selectOption = options.find((option) => option.value === initialData.categoryId)
   const { isSubmitting, isValid } = form.formState;
 
-  const onSubmit = async (values: z.infer<typeof categorySchema>) => {
+  const onSubmit = async (values: z.infer<typeof isFreeSchema>) => {
     try {
-      await updateCourseCategory(courseId, values);
+      await updateChapterAccess(courseId, values, initialData.id);
       toggleEditing();
       route.refresh();
     } catch (error) {
-      toast.error("Error updating title");
-      console.log(error)
+      toast.error("Error updating access chapter");
+      console.log(error);
     }
   };
   return (
     <div className="mt-6 border bg-muted text-muted-foreground p-4">
       <div className="font-medium flex items-center justify-between">
-        Course category
+        Chapter access
         <Button variant={"ghost"} onClick={toggleEditing}>
           {isEditing && "Cancel"}
           {!isEditing && (
@@ -65,14 +63,16 @@ const CategoryForm = ({ initialData, courseId, options }: Props) => {
         </Button>
       </div>
       {!isEditing && (
-        <p
+        <div
           className={cn(
             "mt-2 text-sm",
-            !initialData.categoryId && "text-muted-foreground/50 italic"
+            !initialData.isFree && "text-muted-foreground/50 italic"
           )}
         >
-          {selectOption ? selectOption.label : "Add a category"}
-        </p>
+          {initialData.isFree
+            ? "This chapter is free"
+            : "This chapter is not free"}
+        </div>
       )}
       {isEditing && (
         <Form {...form}>
@@ -82,15 +82,17 @@ const CategoryForm = ({ initialData, courseId, options }: Props) => {
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="isFree"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex space-x-3 rounded-md border p-4 items-start text-sm space-y-0">
                   <FormControl>
-                    <Combobox 
-                      options={options}
-                      {...field}
+                    <Switch 
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
+                  <p className="space-y-1 leading-none">If enabled, this chapter will be free for all students</p>
                   <FormMessage />
                 </FormItem>
               )}
@@ -107,4 +109,4 @@ const CategoryForm = ({ initialData, courseId, options }: Props) => {
   );
 };
 
-export default CategoryForm;
+export default ChapterAccessForm;
