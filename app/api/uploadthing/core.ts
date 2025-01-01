@@ -55,7 +55,7 @@ export const ourFileRouter = {
         }),
     courseVideo: f({
         video: {
-            maxFileSize: "32MB",
+            maxFileSize: "1GB",
             maxFileCount: 1,
         },
     })

@@ -8,6 +8,7 @@ import ChapterTitleForm from "./_components/chapter-title-form";
 import ChapterDescriptionForm from "./_components/chapter-description-form";
 import ChapterAccessForm from "./_components/chapter-access-form";
 import ChapterVideoForm from "./_components/chapter-video-form";
+import ChapterActions from "./_components/chapter-action";
 
 type Props = {
   params: {
@@ -47,7 +48,12 @@ const Page = async ({ params }: Props) => {
                   {completionText} fields completed
                 </span>
               </div>
-              {/* filds actions */}
+              <ChapterActions 
+              courseId={params.courseId}
+              chapterId={params.chapterId}
+              isPublished={chapter.isPublisched}
+              disabled={!isCompleted}
+              />
             </div>
           </div>
         </div>

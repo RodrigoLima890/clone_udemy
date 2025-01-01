@@ -26,11 +26,11 @@ model User {
   emailVerified DateTime?
   image         String?
 
-  accounts     Account[]
-  UserProgress UserProgress[]
-  purchases    Purchase[]
-  stripeCustomer  StripeCustomer?
-  Course Course[]
+  accounts       Account[]
+  UserProgress   UserProgress[]
+  purchases      Purchase[]
+  stripeCustomer StripeCustomer?
+  Course         Course[]
 
   role Role @default(USER)
 }
@@ -45,14 +45,14 @@ model Course {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  category    Category?    @relation(fields: [categoryId], references: [id])
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId  String?
   attachments Attachment[]
   purchase    Purchase[]
   chapter     Chapter[]
 
-  teacher     User @relation(fields: [teacherId], references: [id])
-  teacherId   String
+  teacher   User   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  teacherId String
 }
 
 model Chapter {
@@ -66,31 +66,31 @@ model Chapter {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  course       Course @relation(fields: [courseId], references: [id])
-  courseId     String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
 
   muxData      MuxData?
   userProgress UserProgress[]
 }
 
 model Category {
-  id           String   @id @default(cuid())
-  name         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  courses      Course[]
+  courses Course[]
 }
 
 model Attachment {
-  id           String   @id @default(cuid())
-  name         String?
-  url          String   @db.Text
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String?
+  url       String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  course       Course @relation(fields: [courseId], references: [id])
-  courseId     String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
 }
 
 model UserProgress {
@@ -113,24 +113,23 @@ model Purchase {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-  course  Course @relation(fields: [courseId], references: [id])
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 
   @@unique([userId, courseId])
 }
 
 model StripeCustomer {
-  id         String   @id @default(cuid())
-  stripeCustomerId    String   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id               String   @id @default(cuid())
+  stripeCustomerId String   @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String  @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 }
-
 
 model MuxData {
   id         String   @id @default(cuid())

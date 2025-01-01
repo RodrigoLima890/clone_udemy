@@ -338,14 +338,14 @@ const { video } = new Mux({
 
 export const updateChapterVideo = async (
     courseId: string,
-    data: { videoUrl: string},
+    data: { videoUrl: string },
     chapterId: string
 ) => {
     try {
         const user = await _isAuthUser()
-    
+
         if (!user) throw Error("User not found");
-    
+
         const chapter = db.chapter.update({
             where: {
                 id: chapterId,
@@ -356,14 +356,14 @@ export const updateChapterVideo = async (
             }
         })
 
-        if(data.videoUrl){
+        if (data.videoUrl) {
             const existsMuxData = await db.muxData.findFirst({
                 where: {
-                    chapterId:chapterId
+                    chapterId: chapterId
                 }
             })
 
-            if(existsMuxData){
+            if (existsMuxData) {
                 await video.assets.delete(existsMuxData.assetId)
                 await db.muxData.delete({
                     where: {
@@ -388,7 +388,7 @@ export const updateChapterVideo = async (
             })
         }
         return chapter;
-    }catch (error) {
+    } catch (error) {
         console.log("Error in updateChapterVideo: ", error)
         throw error
     }
@@ -430,6 +430,52 @@ export const getChapter = async (
         return chapter
     } catch (error) {
         console.log("Error in getChapter: ", error)
+        throw error
+    }
+}
+
+export const deleteChapter = async (
+    chapterId: string,
+    courseId: string
+) => {
+    try {
+        const user = await _isAuthUser()
+
+        if (!user) throw Error("User not found");
+
+        const chapter = await db.chapter.findUnique({
+            where: {
+                id: chapterId,
+                courseId: courseId
+            }
+        })
+
+        if (chapter?.videoUrl) {
+            const muxData = await db.muxData.findFirst({
+                where: {
+                    chapterId: chapterId
+                }
+            })
+
+            if (muxData) {
+                await video.assets.delete(muxData.assetId)
+                await db.muxData.delete({
+                    where: {
+                        id: muxData.id
+                    }
+                })
+            }
+        }
+
+        await db.chapter.delete({
+            where: {
+                id: chapterId,
+                courseId: courseId
+            }
+        })
+        return chapter
+    } catch (error) {
+        console.log("Error in deleteChapter: ", error)
         throw error
     }
 }

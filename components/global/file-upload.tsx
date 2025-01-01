@@ -19,7 +19,7 @@ export default function FileUpload({endpoint, onChange}:Props) {
         }}
         onUploadError={(error: Error) => {
           toast.error(`Error uploading file`);
-          console.log(error.message);
+          console.log(error)
         }}
       />
     </main>
