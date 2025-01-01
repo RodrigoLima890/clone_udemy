@@ -1,7 +1,7 @@
 "use client";
 import ConfirmModal from "@/components/global/confirm-modal";
 import { Button } from "@/components/ui/button";
-import { deleteChapter } from "@/data";
+import { deleteChapter, publishChapter, unpublishChapter } from "@/data";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -25,6 +25,16 @@ const ChapterActions = ({
   const handlePublish = async() => {
     try {
       setIsLoading(true)
+      if(isPublished){
+        // unpublish
+        await unpublishChapter(chapterId, courseId)
+        toast.success("Chapter unpublished")
+      }else{
+        // publish
+        await publishChapter(chapterId, courseId)
+        toast.success("Chapter published")
+      }
+      router.refresh()
     } catch (error) {
       toast.error("Erro publish chapter")
       console.log(error)

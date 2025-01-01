@@ -479,3 +479,72 @@ export const deleteChapter = async (
         throw error
     }
 }
+
+export const unpublishChapter = async (
+    chapterId: string,
+    courseId: string
+) => {
+    try {
+        const user = await _isAuthUser()
+
+        if (!user) throw Error("User not found");
+
+        const chapter = db.chapter.update({
+            where: {
+                id: chapterId,
+                courseId: courseId
+            },
+            data: {
+                isPublisched: false
+            }
+        })
+        const chaptersInCourse = await db.chapter.findMany({
+            where: {
+                courseId: courseId,
+                isPublisched: true
+            }
+        })
+
+        if(chaptersInCourse.length === 0){
+            await db.course.update({
+                where: {
+                    id: courseId
+                },
+                data: {
+                    isPublisched: false
+                }
+            })
+        }
+
+        return chapter
+    } catch (error) {
+        console.log("Error in unpublishChapter: ", error)
+        throw error
+    }
+}
+
+export const publishChapter = async (
+    chapterId: string,
+    courseId: string
+) => {
+    try {
+        const user = await _isAuthUser()
+
+        if (!user) throw Error("User not found");
+
+        const chapter = db.chapter.update({
+            where: {
+                id: chapterId,
+                courseId: courseId
+            },
+            data: {
+                isPublisched: true
+            }
+        })
+
+        return chapter
+    } catch (error) {
+        console.log("Error in publishChapter: ", error)
+        throw error
+    }
+}
