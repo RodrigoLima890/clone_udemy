@@ -548,3 +548,112 @@ export const publishChapter = async (
         throw error
     }
 }
+
+export const deleteCourse = async (
+    courseId: string
+) => {
+    try {
+        const user = await _isAuthUser()
+
+        if (!user) throw Error("User not found");
+
+        const course = await db.course.findUnique({
+            where: {
+                id: courseId,
+                teacherId: user.id
+            },
+            include: {
+                chapter: {
+                    include: {
+                        muxData: true
+                    }
+                }
+            }
+        })
+
+        if(!course) throw new Error("Course not found");
+
+        for (const chapter of course.chapter) {
+            if(chapter.muxData?.assetId){
+                await video.assets.delete(chapter.muxData.assetId)
+            }            
+        }
+
+        const deletaCourse = await db.course.delete({
+            where: {
+                id: courseId
+            }
+        })
+        
+        return deletaCourse;
+    } catch (error) {
+        console.log("Error in deleteCourse: ", error)
+        throw error
+    }
+}
+
+
+export const unpublishCourse = async (
+    courseId: string
+) => {
+    try {
+        const user = await _isAuthUser()
+
+        if (!user) throw Error("User not found");
+
+        await db.course.update({
+            where:{
+                id: courseId
+            },
+            data: {
+                isPublisched: false
+            }
+        })
+    } catch (error) {
+        console.log("Error in unpublishCourse: ", error)
+        throw error
+    }
+}
+
+export const publishCourse = async (
+    courseId: string
+) => {
+    try {
+        const user = await _isAuthUser()
+
+        if (!user) throw Error("User not found");
+
+        const course = await db.course.findUnique({
+            where: {
+                id:courseId,
+                teacherId: user.id
+            },
+            include: {
+                chapter: {
+                    include: {
+                        muxData: true
+                    }
+                }
+            }
+        })
+        if(!course) throw new Error("Course not found");
+        
+        const hasPublishedChapter = course.chapter.some((item) => (item.isPublisched))
+
+        if(!hasPublishedChapter){
+            throw new Error("Course has no published chapters")
+        }
+
+        await db.course.update({
+            where:{
+                id: courseId
+            },
+            data: {
+                isPublisched: true
+            }
+        })
+    } catch (error) {
+        console.log("Error in publishCourse: ", error)
+        throw error
+    }
+}

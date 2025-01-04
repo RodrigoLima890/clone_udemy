@@ -72,13 +72,6 @@ const ChaptersForm = ({ initialData, courseId }: Props) => {
   }
   return (
     <div className="mt-6 border bg-muted text-muted-foreground p-4 relative">
-        {
-          isUpdating && (
-        <div className="absolute h-full w-full bg-muted-foreground top-0 ring-0 rounded-md fex items-center justify-center">
-          <Loader2 className="h-4 w-4 animate-spin" />
-        </div>
-          )
-        }
       <div className="font-medium flex items-center justify-between">
         Course chapters
         <Button variant={"ghost"} onClick={toggleCreating}>

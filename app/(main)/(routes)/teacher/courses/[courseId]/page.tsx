@@ -11,6 +11,7 @@ import CategoryForm from "./_components/category-form";
 import ImageForm from "./_components/image-form";
 import AttachmentForm from "./_components/attachment-form";
 import ChaptersForm from "./_components/chapters-form";
+import CourseActions from "./_components/course-actions";
 
 type Props = {
   params: {
@@ -37,7 +38,7 @@ const page = async ({ params }: Props) => {
   const totalFields = requiredField.length;
   const completedFields = requiredField.filter(Boolean).length;
   const completionText = `${completedFields}/${totalFields}`;
-  //const isCompleted = completedFields === totalFields;
+  const isCompleted = completedFields === totalFields;
 
   return (
     <>
@@ -50,7 +51,11 @@ const page = async ({ params }: Props) => {
               {completionText} fields completed
             </span>
           </div>
-          {/* {add actions} */}
+          <CourseActions 
+            courseId={course.id}
+            isPublished={course.isPublisched}
+            disabled={!isCompleted}
+          />
         </div>
         <div className="mt-14">
           <Tabs defaultValue="details" className="space-y-4">
