@@ -1,18 +1,23 @@
-import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
-import Link from "next/link";
+
 import React from "react";
+import { DataTable } from "./_components/data-table";
+import { columns } from "./_components/columns";
+import { getCourses } from "@/data";
 
 const page = async() =>{
+    const courses = await getCourses()
+    const data = courses.map(course => {
+        return {
+            ...course,
+            chapter: course.chapter.length
+        }
+    })
     return(
-        <div>
-            <Link href={"/teacher/create"}>
-            <Button>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Create Course
-            </Button>
-            </Link>
-        </div>
+       
+        <DataTable 
+            columns={columns}
+            data={data}
+        />
     )
 }
 

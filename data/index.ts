@@ -67,6 +67,34 @@ export const getCourse = async (courseId: string) => {
         throw error
     }
 }
+
+export const getCourses = async () => {
+    try {
+        const user = await _isAuthUser()
+        if (!user) throw Error("User not found");
+
+        const courses = db.course.findMany({
+            where: {
+                teacherId: user.id
+            },
+            include: {
+                attachments: true,
+                chapter: {
+                    include:{
+                        muxData:true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: "desc"
+            }
+        })
+        return courses
+    } catch (error) {
+        console.log("Error in getCourses: ", error)
+        throw error
+    }
+}
 export const updateCourseTitle = async (courseId: string, data: { title: string }) => {
     try {
         const user = await _isAuthUser()
