@@ -49,7 +49,7 @@ model Course {
   categoryId  String?
   attachments Attachment[]
   purchase    Purchase[]
-  chapter     Chapter[]
+  chapters     Chapter[]
 
   teacher   User   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   teacherId String

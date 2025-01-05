@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React from "react";
 import { z } from "zod";
@@ -120,13 +121,13 @@ const ChaptersForm = ({ initialData, courseId }: Props) => {
         !isCreating && (
             <div className={cn(
                 "text-sm mt-2",
-                !initialData.chapter.length && "text-muted-foreground/50 italic"
+                !initialData.chapters.length && "text-muted-foreground/50 italic"
             )}>
-                {!initialData.chapter.length && "No chapters added"}
+                {!initialData.chapters.length && "No chapters added"}
                 <ChapterList 
                   onEdit={onEdit}
                   onReorder={onReorder}
-                  items={initialData.chapter || []}
+                  items={initialData.chapters || []}
                   />
             </div>
         )

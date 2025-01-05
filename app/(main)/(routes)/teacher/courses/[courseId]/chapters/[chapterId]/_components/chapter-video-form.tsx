@@ -81,7 +81,7 @@ const ChapterVideoForm = ({ initialData, courseId, chapterId }: Props) => {
       {
         initialData.videoUrl && !isEditing && (
           <div className="text-xs mt-2 text-muted-foreground">
-            Video can take a few minuteres to process. Refresh the page if doesn't show up
+            Video can take a few minuteres to process. Refresh the page if doesn&apos;t show up
           </div>
         )
       }

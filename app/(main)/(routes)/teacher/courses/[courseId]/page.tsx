@@ -31,7 +31,7 @@ const page = async ({ params }: Props) => {
     course.imageUrl,
     course.price,
     course.categoryId,
-    course.chapter.some((chapter) => chapter.isPublisched),
+    course.chapters.some((chapter) => chapter.isPublisched),
   ];
 
   const categories = await getCategories();

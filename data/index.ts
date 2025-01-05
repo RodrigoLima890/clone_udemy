@@ -54,7 +54,7 @@ export const getCourse = async (courseId: string) => {
             },
             include: {
                 attachments: true,
-                chapter: {
+                chapters: {
                     orderBy: {
                         position: 'asc'
                     }
@@ -79,7 +79,7 @@ export const getCourses = async () => {
             },
             include: {
                 attachments: true,
-                chapter: {
+                chapters: {
                     include:{
                         muxData:true
                     }
@@ -591,7 +591,7 @@ export const deleteCourse = async (
                 teacherId: user.id
             },
             include: {
-                chapter: {
+                chapters: {
                     include: {
                         muxData: true
                     }
@@ -601,7 +601,7 @@ export const deleteCourse = async (
 
         if(!course) throw new Error("Course not found");
 
-        for (const chapter of course.chapter) {
+        for (const chapter of course.chapters) {
             if(chapter.muxData?.assetId){
                 await video.assets.delete(chapter.muxData.assetId)
             }            
@@ -657,7 +657,7 @@ export const publishCourse = async (
                 teacherId: user.id
             },
             include: {
-                chapter: {
+                chapters: {
                     include: {
                         muxData: true
                     }
@@ -666,7 +666,7 @@ export const publishCourse = async (
         })
         if(!course) throw new Error("Course not found");
         
-        const hasPublishedChapter = course.chapter.some((item) => (item.isPublisched))
+        const hasPublishedChapter = course.chapters.some((item) => (item.isPublisched))
 
         if(!hasPublishedChapter){
             throw new Error("Course has no published chapters")

@@ -44,9 +44,9 @@ const ChapterTitleForm = ({ initialData, courseId, chapterId }: Props) => {
         await updateChapterTitle(courseId, values, chapterId)
         toggleEditing()
         route.refresh()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         toast.error("Error updating title")
+        console.log(error)
     }
   }
   return (

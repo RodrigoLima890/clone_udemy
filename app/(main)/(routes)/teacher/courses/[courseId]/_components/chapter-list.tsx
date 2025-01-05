@@ -41,7 +41,7 @@ const ChapterList = ({ onEdit, onReorder, items }: Props) => {
 
     const updateChapter = items.slice(startIndex, endIndex + 1)
     setChapters(items)
-    const bulkUpdateData = updateChapter.map((chapter, index) => ({
+    const bulkUpdateData = updateChapter.map((chapter) => ({
         id:chapter.id,
         position: items.findIndex((item) => item.id === chapter.id)
     }))
