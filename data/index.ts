@@ -2,6 +2,7 @@
 
 import { currentUser } from "@/lib/auth"
 import { db } from "@/lib/db";
+import { GetCourse, GetCourseWithoutProgress } from "@/lib/type";
 import Mux from "@mux/mux-node"
 
 const _isAuthUser = async () => {
@@ -80,8 +81,8 @@ export const getCourses = async () => {
             include: {
                 attachments: true,
                 chapters: {
-                    include:{
-                        muxData:true
+                    include: {
+                        muxData: true
                     }
                 }
             },
@@ -533,7 +534,7 @@ export const unpublishChapter = async (
             }
         })
 
-        if(chaptersInCourse.length === 0){
+        if (chaptersInCourse.length === 0) {
             await db.course.update({
                 where: {
                     id: courseId
@@ -599,12 +600,12 @@ export const deleteCourse = async (
             }
         })
 
-        if(!course) throw new Error("Course not found");
+        if (!course) throw new Error("Course not found");
 
         for (const chapter of course.chapters) {
-            if(chapter.muxData?.assetId){
+            if (chapter.muxData?.assetId) {
                 await video.assets.delete(chapter.muxData.assetId)
-            }            
+            }
         }
 
         const deletaCourse = await db.course.delete({
@@ -612,7 +613,7 @@ export const deleteCourse = async (
                 id: courseId
             }
         })
-        
+
         return deletaCourse;
     } catch (error) {
         console.log("Error in deleteCourse: ", error)
@@ -630,7 +631,7 @@ export const unpublishCourse = async (
         if (!user) throw Error("User not found");
 
         await db.course.update({
-            where:{
+            where: {
                 id: courseId
             },
             data: {
@@ -653,7 +654,7 @@ export const publishCourse = async (
 
         const course = await db.course.findUnique({
             where: {
-                id:courseId,
+                id: courseId,
                 teacherId: user.id
             },
             include: {
@@ -664,16 +665,16 @@ export const publishCourse = async (
                 }
             }
         })
-        if(!course) throw new Error("Course not found");
-        
+        if (!course) throw new Error("Course not found");
+
         const hasPublishedChapter = course.chapters.some((item) => (item.isPublisched))
 
-        if(!hasPublishedChapter){
+        if (!hasPublishedChapter) {
             throw new Error("Course has no published chapters")
         }
 
         await db.course.update({
-            where:{
+            where: {
                 id: courseId
             },
             data: {
@@ -683,5 +684,144 @@ export const publishCourse = async (
     } catch (error) {
         console.log("Error in publishCourse: ", error)
         throw error
+    }
+}
+
+export const getProgress = async (courseId: string) => {
+    try {
+        const user = await _isAuthUser()
+
+        if (!user) throw Error("User not found");
+
+        const publishChapters = await db.chapter.findMany({
+            where: {
+                courseId: courseId,
+                isPublisched: true
+            },
+            select: {
+                id: true
+            }
+        })
+
+        const publishedChaptersIds = publishChapters.map((chapter) => chapter.id)
+
+        const validCompletedChapters = await db.userProgress.findMany({
+            where: {
+                userId: user.id,
+                chapterId: {
+                    in: publishedChaptersIds
+                },
+                isCompleted: true
+            }
+        })
+
+        const progress = (validCompletedChapters.length / publishChapters.length) * 100
+
+        return progress
+    } catch (error) {
+        console.log("Error in getCourseWithProgress: ", error)
+        return []
+    }
+}
+
+export const getCourseWithProgress = async ({
+    userId,
+    title,
+    categoryId
+}: GetCourse) => {
+    try {
+        const courses = await db.course.findMany({
+            where: {
+                isPublisched: true,
+                title: {
+                    contains: title
+                },
+                categoryId: categoryId
+            },
+            include: {
+                category: true,
+                chapters: {
+                    where: {
+                        isPublisched: true
+                    },
+                    select: {
+                        id: true
+                    }
+                },
+                purchase: {
+                    where: {
+                        userId
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: "desc"
+            }
+        })
+
+
+        return await Promise.all(
+            courses.map(async (course) => {
+                if (course.purchase.length === 0) {
+                    return {
+                        ...course,
+                        progress: null
+                    };
+                }
+                const progress = await getProgress(course.id);
+
+                return {
+                    ...course,
+                    progress
+                };
+            })
+        )
+
+    } catch (error) {
+        console.log("Error in getCourseWithProgress: ", error)
+        return []
+    }
+}
+
+export const getCourseWithoutProgress = async ({
+    title,
+    categoryId
+}: GetCourseWithoutProgress) => {
+    try {
+        const courses = await db.course.findMany({
+            where: {
+                isPublisched: true,
+                title: {
+                    contains: title
+                },
+                categoryId: categoryId
+            },
+            include: {
+                category: true,
+                chapters: {
+                    where: {
+                        isPublisched: true
+                    },
+                    select: {
+                        id: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: "desc"
+            }
+        })
+
+        return await Promise.all(
+            courses.map(async (course) => {
+                return {
+                    ...course
+                };
+            })
+        )
+
+    } catch (error) {
+        console.log("Error in getCourseWithoutProgress: ", error)
+        return []
     }
 }
