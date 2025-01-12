@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import SearchInput from "@/components/global/search-input";
 import { getCategories } from "@/data";
 import { currentUser } from "@/lib/auth";
